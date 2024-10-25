@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Socket.io Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .chat-box {
+            width: 300px;
+            margin: 20px auto;
+        }
+
+        .messages {
+            border: 1px solid #ccc;
+            padding: 10px;
+            height: 200px;
+            overflow-y: scroll;
+        }
+
+        .input-group {
+            display: flex;
+        }
+
+        .input-group input {
+            flex: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="chat-box">
+        <div class="messages" id="messages"></div>
+        <div class="input-group">
+            <input id="messageInput" autocomplete="off" />
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+            const socket = io();
+
+            // Display incoming messages
+            socket.on("chat message", (msg) => {
+                const messageElement = document.createElement("div");
+                messageElement.textContent = msg;
+                document.getElementById("messages").appendChild(messageElement);
+            });
+
+            // Send message to server
+            function sendMessage() {
+                const input = document.getElementById("messageInput");
+                socket.emit("chat message", input.value);
+                input.value = "";
+            }
+    </script>
+</body>
+
+</html>
