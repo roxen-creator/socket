@@ -1,10 +1,31 @@
 const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
+const cors = require("cors");
 
 const app = express();
+
+// Updated CORS configuration
+app.use(cors({
+    origin: ["http://localhost:5173", "http://127.0.0.1:5173"],
+    methods: ["GET", "POST", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true
+}));
+
 const server = http.createServer(app);
-const io = new Server(server);
+
+// Updated Socket.IO configuration
+const io = new Server(server, {
+    cors: {
+        origin: ["http://localhost:5173", "http://127.0.0.1:5173"],
+        methods: ["GET", "POST", "OPTIONS"],
+        allowedHeaders: ["Content-Type", "Authorization"],
+        credentials: true
+    },
+    allowEIO3: true,
+    transports: ['websocket', 'polling']
+});
 
 app.get("/", (req, res) => {
     res.sendFile(__dirname + "/index.html");
@@ -13,14 +34,9 @@ app.get("/", (req, res) => {
 io.on("connection", (socket) => {
     console.log("a user connected");
 
-    // Listen for incoming messages from the client
     socket.on("chat message", (msg) => {
         console.log("User message: " + msg);
-
-        // Generate a bot response based on the message
         let botReply = getBotReply(msg);
-
-        // Send bot reply to the client
         io.emit("chat message", `Bot: ${botReply}`);
     });
 
@@ -29,10 +45,8 @@ io.on("connection", (socket) => {
     });
 });
 
-// Basic function to generate a bot response
 function getBotReply(message) {
     message = message.toLowerCase();
-
     if (message.includes("hello") || message.includes("hi")) {
         return "Hello! How can I help you today?";
     } else if (message.includes("how are you")) {
