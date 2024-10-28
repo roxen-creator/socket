@@ -9,6 +9,15 @@ const app = express();
 const sentiment = new Sentiment();
 const classifier = new natural.BayesClassifier();
 
+const querySuggestions = [
+    { text: "Tell me about study programs", category: "programs" },
+    { text: "Admission requirements", category: "admissions" },
+    { text: "Scholarship options", category: "fees" },
+    { text: "Study destinations", category: "destinations" },
+    { text: "Language requirements", category: "language" },
+    { text: "Visa process", category: "visa" }
+];
+
 // Train classifier with education-specific patterns
 classifier.addDocument('programs courses degrees study', 'programs');
 classifier.addDocument('admission requirements application process how to apply', 'admissions');
@@ -60,10 +69,14 @@ const responses = {
         "We partner with top universities worldwide. Would you like to know about:\n1. Rankings\n2. Specializations\n3. Campus Life\n4. Career Outcomes",
         "Our university selection considers:\n• Academic Excellence\n• Research Opportunities\n• Graduate Employability\n• Student Experience\n\nWhat matters most to you?",
         "Let's find your ideal university based on:\n- Program Strength\n- Location\n- Budget\n- Career Goals\n\nWhat are your priorities?"
+    ],
+    default: [
+        "I'd be happy to help you with that. Could you please provide more details about what you're looking for?",
+        "Let me assist you better. Could you be more specific about your requirements?",
+        "I'm here to help! Could you elaborate on what you'd like to know?"
     ]
 };
 
-// Enable CORS
 app.use(cors({
     origin: ["http://localhost:5173", "http://127.0.0.1:5173"],
     methods: ["GET", "POST", "OPTIONS"],
@@ -72,7 +85,6 @@ app.use(cors({
 }));
 
 const server = http.createServer(app);
-
 const io = new Server(server, {
     cors: {
         origin: ["http://localhost:5173", "http://127.0.0.1:5173"],
@@ -84,11 +96,10 @@ const io = new Server(server, {
     transports: ['websocket', 'polling']
 });
 
-// Store conversation context
 const conversationContext = new Map();
 
 function getRandomResponse(category) {
-    const categoryResponses = responses[category];
+    const categoryResponses = responses[category] || responses.default;
     return categoryResponses[Math.floor(Math.random() * categoryResponses.length)];
 }
 
@@ -99,11 +110,9 @@ function getBotReply(message, userId) {
         sentiment: 0
     };
 
-    // Analyze message
     const sentimentScore = sentiment.analyze(message).score;
     const classification = classifier.classify(message.toLowerCase());
 
-    // Update context
     context.messageCount++;
     context.lastTopic = classification;
     context.sentiment = sentimentScore;
@@ -115,6 +124,8 @@ function getBotReply(message, userId) {
 
 io.on("connection", (socket) => {
     console.log("✨ New user connected:", socket.id);
+
+    socket.emit("query_suggestions", querySuggestions);
 
     socket.on("chat message", (msg) => {
         console.log("📩 Received message:", msg);
