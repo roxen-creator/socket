@@ -1,4 +1,4 @@
-# Phul Kumari Chatbot
+# educon chatbot
 
 An interactive educational consulting chatbot built with React, Socket.IO, and Tailwind CSS.
 
