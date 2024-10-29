@@ -11,11 +11,6 @@ const classifier = new natural.BayesClassifier();
 
 const querySuggestions = [
   { text: "Study programs", category: "programs" },
-  { text: "Admission requirements", category: "admissions" },
-  { text: "Scholarship options", category: "fees" },
-  { text: "Study destinations", category: "destinations" },
-  { text: "Language requirements", category: "language" },
-  { text: "Visa process", category: "visa" },
   { text: "Contact us", category: "contact" },
   { text: "Branch locations", category: "branch" },
 ];
@@ -28,25 +23,8 @@ classifier.addDocument(
 classifier.addDocument("undergraduate bachelor degree", "undergraduate");
 classifier.addDocument("master postgraduate mba", "masters");
 classifier.addDocument("phd doctorate research", "phd");
-classifier.addDocument(
-  "admission requirements application process how to apply",
-  "admissions"
-);
-classifier.addDocument("fees tuition cost scholarship financial aid", "fees");
 classifier.addDocument("hello hi hey greetings", "greeting");
-classifier.addDocument(
-  "countries abroad study destinations locations",
-  "destinations"
-);
-classifier.addDocument(
-  "ielts toefl pte english test language requirements",
-  "language"
-);
-classifier.addDocument("visa student visa process requirements", "visa");
-classifier.addDocument(
-  "university college institution school ranking",
-  "universities"
-);
+
 classifier.addDocument("contact us phone email", "contact");
 classifier.addDocument(
   "branch office location address nearest center",
