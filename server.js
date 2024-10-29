@@ -11,8 +11,11 @@ const classifier = new natural.BayesClassifier();
 
 const querySuggestions = [
   { text: "Study programs", category: "programs" },
-  { text: "Contact us", category: "contact" },
-  { text: "Branch locations", category: "branch" },
+  { text: "Admission requirements", category: "admissions" },
+  { text: "Scholarship options", category: "fees" },
+  { text: "Study destinations", category: "destinations" },
+  { text: "Language requirements", category: "language" },
+  { text: "Visa process", category: "visa" },
 ];
 
 // Train classifier
@@ -23,14 +26,82 @@ classifier.addDocument(
 classifier.addDocument("undergraduate bachelor degree", "undergraduate");
 classifier.addDocument("master postgraduate mba", "masters");
 classifier.addDocument("phd doctorate research", "phd");
-classifier.addDocument("hello hi hey greetings", "greeting");
-
-classifier.addDocument("contact us phone email", "contact");
 classifier.addDocument(
-  "branch office location address nearest center",
-  "branch"
+  "admission requirements application process how to apply",
+  "admissions"
+);
+classifier.addDocument("fees tuition cost scholarship financial aid", "fees");
+classifier.addDocument("hello hi hey greetings", "greeting");
+classifier.addDocument(
+  "countries abroad study destinations locations",
+  "destinations"
+);
+classifier.addDocument(
+  "ielts toefl pte english test language requirements",
+  "language"
+);
+classifier.addDocument("visa student visa process requirements", "visa");
+classifier.addDocument(
+  "university college institution school ranking",
+  "universities"
 );
 classifier.train();
+
+const programResponses = {
+  "Undergraduate Degrees": `**Undergraduate Programs**
+
+Choose your field of interest:
+• Business & Management
+• Computer Science & IT
+• Engineering
+• Arts & Humanities
+• Life Sciences`,
+
+  "Master's Programs": `**Master's Programs**
+
+Select your specialization:
+• MBA
+• MSc Computer Science
+• MA International Relations
+• MEng Engineering
+• MSc Data Science`,
+
+  "PhD Programs": `**Doctoral Programs**
+
+Explore research areas:
+• STEM Fields
+• Social Sciences
+• Business Research
+• Engineering Innovation
+• Arts & Humanities`,
+
+  "Professional Certifications": `**Professional Certifications**
+
+Choose certification type:
+• Project Management
+• Digital Marketing
+• Data Analytics
+• Cloud Computing
+• Business Administration`,
+
+  "Business & Management": `**Business & Management Programs**
+
+Available courses:
+• BBA in International Business
+• BSc in Finance
+• BA in Marketing
+• BSc in Economics
+• BBA in Entrepreneurship`,
+
+  "Computer Science & IT": `**Computer Science Programs**
+
+Specializations available:
+• Software Engineering
+• Artificial Intelligence
+• Cybersecurity
+• Data Science
+• Network Engineering`,
+};
 
 const responses = {
   greeting:
@@ -42,59 +113,8 @@ Choose your preferred option:
 • Master's Programs
 • PhD Programs
 • Professional Certifications`,
-  contact: `**Contact Educon**
-    
-Choose how to reach us:
-• Email: info@educon.com
-• Phone: +120202002020202
-• WhatsApp: +1-234-567-8901`,
-  branch: `**Our Branch Network**
-
-Select your region:
-**North Region**
-• Delhi NCR
-• Chandigarh
-• Lucknow
-
-**South Region**
-• Bangalore
-• Chennai
-• Hyderabad
-
-**International Offices**
-• Dubai
-• Singapore
-• London`,
   default:
     "I'm here to help! Could you please be more specific about what you'd like to know?",
-};
-
-const topicResponses = {
-  branch: {
-    north:
-      "**North Region Details**\n• Delhi NCR: 123 Main Street, Delhi\n• Chandigarh: SCO 456, Sector 17\n• Lucknow: 789 Gomti Nagar\n\nOffice Hours: Mon-Sat 9AM-6PM",
-    south:
-      "**South Region Details**\n• Bangalore: 321 MG Road\n• Chennai: 654 Anna Nagar\n• Hyderabad: 987 Jubilee Hills\n\nOffice Hours: Mon-Sat 9AM-6PM",
-    international:
-      "**International Offices**\n• Dubai: Business Bay Tower\n• Singapore: 111 Orchard Road\n• London: 222 Oxford Street\n\nPlease check local time zones for office hours",
-  },
-  contact: {
-    email:
-      "**Email Contact**\nYou can email us at info@educon.com. We typically respond within 24 hours.",
-    phone:
-      "**Phone Support**\nCall us at +1-234-567-8900. Our phone lines are open Monday-Friday, 9AM-6PM.",
-    whatsapp:
-      "**WhatsApp Support**\nMessage us on WhatsApp: +1-234-567-8901 for 24/7 support.",
-  },
-  programs: {
-    undergraduate:
-      "**Undergraduate Programs**\n3-4 year programs in Business, Engineering, Arts & Sciences.",
-    masters:
-      "**Master's Programs**\n1-2 year advanced degrees including MBA, MSc, MA.",
-    phd: "**PhD Programs**\nResearch-focused doctoral programs with funding opportunities.",
-    professional:
-      "**Professional Certifications**\nShort-term specialized courses in various fields.",
-  },
 };
 
 function getBotReply(message, userId) {
@@ -104,14 +124,9 @@ function getBotReply(message, userId) {
     sentiment: 0,
   };
 
-  if (
-    /^[1-4]$/.test(message) &&
-    context.lastTopic &&
-    topicResponses[context.lastTopic]
-  ) {
-    return (
-      topicResponses[context.lastTopic][message] || responses[context.lastTopic]
-    );
+  // Check for program-specific responses
+  if (programResponses[message]) {
+    return programResponses[message];
   }
 
   const classification = classifier.classify(message.toLowerCase());
@@ -121,7 +136,6 @@ function getBotReply(message, userId) {
   return responses[classification] || responses.default;
 }
 
-// Express and Socket.IO setup remains the same
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
