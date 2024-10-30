@@ -11,9 +11,8 @@ const classifier = new natural.BayesClassifier();
 
 const querySuggestions = [
   { text: "Study programs", category: "programs" },
-  { text: "Scholarship options", category: "fees" },
-  { text: "Language requirements", category: "language" },
-  { text: "Visa process", category: "visa" },
+  { text: "Contact Us", category: "contact" },
+  { text: "Branch Locations", category: "branch" },
 ];
 
 // Train classifier
@@ -25,6 +24,53 @@ classifier.addDocument("undergraduate bachelor degree", "undergraduate");
 classifier.addDocument("master postgraduate mba", "masters");
 classifier.addDocument("mba business administration management", "mba");
 classifier.train();
+
+const contact = {
+  "Contact Us": `**Contact Educon**
+📧 Email: info@educon.com
+📞 Phone: +1 (555) 123-4567
+⏰ Hours: Monday-Friday, 9:00 AM - 6:00 PM
+💬 Live Chat: Available on website
+🌐 Website: www.educon.com`,
+};
+
+const branch = {
+  "Branch Locations": `**Educon Global Locations**
+
+🌟 Our International Presence
+
+🏢 New York (Global Headquarters)
+ 123 Education Ave, Manhattan
+ New York, NY 10001, USA
+ 📞 +1 (555) 123-4567
+ 📧 nyc@educon.com
+
+🏢 London (European Hub)
+• 45 Learning Street, City of London
+• London EC1A 1BB, UK
+• 📞 +44 20 7123 4567
+• 📧 london@educon.com
+
+🏢 Singapore (Asia Pacific Center)
+ 78 Knowledge Road, Marina Bay
+ Singapore 238859
+ 📞 +65 6789 0123
+ 📧 singapore@educon.com
+
+🏢 Dubai (Middle East Office)
+ Educational District, Business Bay
+ Dubai, UAE
+ 📞 +971 4 123 4567
+ 📧 dubai@educon.com
+
+🏢 Sydney (Oceania Branch)
+ 90 Study Lane, CBD
+ Sydney NSW 2000, Australia
+ 📞 +61 2 9876 5432
+ 📧 sydney@educon.com
+
+✨ Visit any of our branches for a free consultation!`,
+};
 
 const specializationFees = {
   //computer science & IT
@@ -428,6 +474,8 @@ const programResponses = {
   ...computerSciencePrograms,
   ...lifeSciencePrograms,
   ...mscComputerSciencePrograms,
+  ...contact,
+  ...branch,
   "Fee Structure": (specialization) =>
     specializationFees[specialization] || "Fee information not available",
   "Admission Requirements": (specialization) =>
