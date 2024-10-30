@@ -107,7 +107,7 @@ Course Materials: $1,300
 Student Services: $800
 Total Annual Cost: $34,100`,
 
-  "Advanced Software Engineering": `**Advanced Software Engineering Fee Structure**
+  "Software Engineering": `** Software Engineering Fee Structure**
 Tuition per semester: $14,500
 Lab Fee: $1,800
 Student Services: $800
@@ -245,7 +245,7 @@ International exposure
 English proficiency (IELTS 7.5 or equivalent)
 Professional recommendations`,
 
-  "Advanced Software Engineering": `**Advanced Software Engineering Admission Requirements**
+  " Software Engineering": `**Software Engineering Admission Requirements**
 Bachelor's in Computer Science or related field
 Minimum 3.2 GPA
 Strong programming background
@@ -325,13 +325,13 @@ Please select:
 const mscComputerSciencePrograms = {
   "MSc Computer Science": `**MSc Computer Science Programs**
 Specializations available:
-• Advanced Software Engineering
+•  Software Engineering
 • Machine Learning & AI
 • Cloud Computing
 • Information Security
 • Data Analytics`,
 
-  "Advanced Software Engineering": `**Advanced Software Engineering Options**
+  " Software Engineering": `** Software Engineering Options**
 Please select:
 • Fee Structure
 • Admission Requirements`,
